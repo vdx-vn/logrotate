@@ -16,8 +16,7 @@ jobs:
 
             - name: Login to GitHub container registry
               run: |
-                  export DOCKER_PASSWORD=${{env.gh_token}}
-                  docker login ghcr.io -u ${{env.repo_owner}} --password-stdin
+                  echo ${{env.gh_token}} | docker login ghcr.io -u ${{env.repo_owner}} --password-stdin
 
             - name: Build image
               run: |
