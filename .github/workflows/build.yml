@@ -10,8 +10,9 @@ jobs:
 
             - name: Login to GitHub container registry
               run: |
+                  export DOCKER_PASSWORD=${{ secrets.GH_TOKEN }}
                   repo_owner=$(echo "${{inputs.repo_name}}" | cut -d'/' -f1)
-                  echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $repo_owner --password-stdin
+                  docker login ghcr.io -u $repo_owner --password-stdin
 
             - name: Build image
               run: |
