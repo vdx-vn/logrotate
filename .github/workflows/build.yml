@@ -1,0 +1,34 @@
+name: Dispatch workflow on Executor repository
+on:
+    push:
+
+jobs:
+    build-and-publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Login to GitHub container registry
+              run: |
+                  repo_owner=$(echo "${{inputs.repo_name}}" | cut -d'/' -f1)
+                  echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u $repo_owner --password-stdin
+
+            - name: Build image
+              run: |
+                  cd ${{ github.workspace }}
+                  docker build . \
+                        --tag ghcr.io/${{inputs.repo_name}} \
+                        --label "org.opencontainers.image.source=https://github.com/${{inputs.repo_name}}" \
+                        --label "github.run.id=${GITHUB_RUN_ID}"
+
+            - name: Publish image to GitHub container registry
+              run: |
+                  docker push ghcr.io/${{inputs.repo_name}}
+
+            - uses: actions/checkout@v4
+
+            - name: Remove untagged (old) image from GitHub container registry
+              uses: ./.github/actions/delete-untagged-packages
+              with:
+                  github_token: ${{ secrets.GH_TOKEN }}
+                  repo_name: ${{ inputs.repo_name }}
