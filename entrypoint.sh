@@ -2,7 +2,7 @@
 
 # Configure cron schedule (default to every hour)
 CRON_SCHEDULE=${CRON_SCHEDULE:-"0 * * * *"}
-chown -R root:root /etc/logrotate.d/*.conf
+cp -r /conf/. /etc/logrotate.d/
 
 # Function to run logrotate
 run_logrotate() {
