@@ -5,7 +5,6 @@ RUN apk add --no-cache logrotate dcron tzdata
 RUN mkdir -p /var/log/logrotate \
     && chown -R root /var/log/logrotate
 
-COPY logrotate.conf /etc/logrotate.d/
 COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
