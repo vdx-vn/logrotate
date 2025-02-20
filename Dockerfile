@@ -1,12 +1,18 @@
 FROM alpine:latest
 
-RUN apk add --no-cache logrotate
+RUN apk add --no-cache logrotate dcron tzdata
 
-RUN mkdir -p /var/log/logrotate
+RUN mkdir -p /var/log/logrotate \
+    && chown -R root /var/log/logrotate
 
 COPY logrotate.conf /etc/logrotate.d/
-COPY logrotate.sh /etc/logrotate.d/
+COPY entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["/etc/logrotate.d/logrotate.sh"]
+RUN chmod +x /entrypoint.sh
 
-CMD ["tail", "-f", "/dev/null"]
+ENV CRON_SCHEDULE="0 * * * *"
+ENV TZ=UTC
+
+VOLUME ["/var/log/logrotate"]
+
+ENTRYPOINT ["/entrypoint.sh"]
