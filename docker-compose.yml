@@ -1,0 +1,9 @@
+services:
+    logrotate:
+        image: ghcr.io/vdx-vn/logrotate
+        environment:
+            - CRON_SCHEDULE=0 * * * * # crontab to execute logrotate
+        volumes:
+            - ./logs:/var/log/logrotate # map logs folder to logrotate
+            - ./.:/conf # map logrotate config folder
+        restart: always
