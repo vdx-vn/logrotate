@@ -36,4 +36,4 @@ jobs:
               uses: ./.github/actions/delete-untagged-packages
               with:
                   github_token: ${{env.gh_token}}
-                  repo_name: ${{ inputs.repo_name }}
+                  repo_name: ${{ env.repo_name }}
